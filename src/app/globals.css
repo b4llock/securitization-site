@@ -1,49 +1,274 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #14283a;
+/* ==========================================================================
+   Mundi Capital — design tokens
 
-  /* Mundi Capital brand palette, sampled from the logo */
-  --color-navy-950: #0f2029;
-  --color-navy-900: #14283a;
-  --color-navy-800: #1c3a4f;
-  --color-navy-700: #2a4f68;
-  --color-navy-100: #eef2f5;
+   Register: institutional. A deep navy ground carrying a single bronze
+   accent, a sturdy transitional serif for headings and a neutral grotesque
+   for everything else. The narrative recebíveis → estruturação → capital is
+   still told chromatically — cool and unresolved on the left, bronze and
+   settled on the right — but the palette is a bank's, not a boutique's.
+
+   Legibility is a hard requirement here: the audience skews older and reads
+   on desktop, so body copy sits above 17px, labels above 13px, and no text
+   runs below roughly 60% opacity against its ground.
+   ========================================================================== */
+
+:root {
+  --background: #0b1c28;
+  --foreground: #e9edf1;
+
+  /* Brand navies, anchored on the logo's #14283a */
+  --mc-ink: #0b1c28;
+  --mc-navy-950: #102636;
+  --mc-navy-900: #14283a;
+  --mc-navy-800: #1c3a4f;
+  --mc-navy-700: #2a4f68;
+  --mc-navy-600: #3d6a85;
+  --mc-navy-100: #e9edf1;
+
+  /* Light plane — a paper stock, not a warm editorial cream */
+  --mc-bone: #f2f1ed;
+  --mc-bone-200: #e2e0d9;
+  --mc-bone-400: #b9b6ad;
+
+  /* One accent. Bronze rather than champagne: it should read as metal on a
+     plaque, not as a highlight. */
+  --mc-brass: #b08d4f;
+  --mc-brass-200: #d2b87e;
+  --mc-brass-700: #7c6233;
+
+  /* Motion. Long and even — nothing snaps, nothing overshoots. */
+  --ease-calm: cubic-bezier(0.32, 0, 0.16, 1);
+  --ease-settle: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* Layout rhythm */
+  --shell: 78rem;
+  --gutter: 1.5rem;
+
+  /* Hairlines. Present enough to read as ruling, not as decoration. */
+  --rule-dark: rgba(233, 237, 241, 0.2);
+  --rule-light: rgba(11, 28, 40, 0.22);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gutter: 2.5rem;
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-navy-950: var(--color-navy-950);
-  --color-navy-900: var(--color-navy-900);
-  --color-navy-800: var(--color-navy-800);
-  --color-navy-700: var(--color-navy-700);
-  --color-navy-100: var(--color-navy-100);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-fraunces);
+
+  --color-ink: var(--mc-ink);
+  --color-navy-950: var(--mc-navy-950);
+  --color-navy-900: var(--mc-navy-900);
+  --color-navy-800: var(--mc-navy-800);
+  --color-navy-700: var(--mc-navy-700);
+  --color-navy-600: var(--mc-navy-600);
+  --color-navy-100: var(--mc-navy-100);
+
+  --color-bone: var(--mc-bone);
+  --color-bone-200: var(--mc-bone-200);
+  --color-bone-400: var(--mc-bone-400);
+
+  --color-brass: var(--mc-brass);
+  --color-brass-200: var(--mc-brass-200);
+  --color-brass-700: var(--mc-brass-700);
+
+  --font-sans: var(--font-source-sans);
+  --font-display: var(--font-source-serif);
 }
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
 
 html {
   scroll-behavior: smooth;
+  background: var(--mc-ink);
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-source-sans), ui-sans-serif, system-ui, sans-serif;
+  /* 17px base: the whole scale is tuned for sustained reading. */
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
 }
 
-/* Safety net for the scroll-reveal animations (see Reveal.tsx): they must
-   never be the only thing making content visible. */
+::selection {
+  background: var(--mc-brass);
+  color: #ffffff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--mc-brass-200);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+body[data-scroll-locked="true"] {
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Typography
+
+   Source Serif 4 carries the headings at weight 600 and a moderate optical
+   size: a sturdy, low-contrast cut that holds its colour on screen. The
+   earlier high-contrast display face read as fashion editorial; this one
+   reads as a prospectus.
+   ========================================================================== */
+
+.type-display {
+  font-family: var(--font-source-serif), Georgia, "Times New Roman", serif;
+  font-variation-settings: "opsz" 40;
+  font-weight: 600;
+  font-size: clamp(2.25rem, 5vw, 4.25rem);
+  line-height: 1.07;
+  letter-spacing: -0.019em;
+}
+
+.type-h2 {
+  font-family: var(--font-source-serif), Georgia, "Times New Roman", serif;
+  font-variation-settings: "opsz" 32;
+  font-weight: 600;
+  font-size: clamp(1.75rem, 3.3vw, 2.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.014em;
+}
+
+.type-h3 {
+  font-family: var(--font-source-serif), Georgia, "Times New Roman", serif;
+  font-variation-settings: "opsz" 20;
+  font-weight: 600;
+  font-size: clamp(1.1875rem, 1.6vw, 1.4375rem);
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+}
+
+.type-statement {
+  font-family: var(--font-source-serif), Georgia, "Times New Roman", serif;
+  font-variation-settings: "opsz" 28;
+  font-weight: 400;
+  font-size: clamp(1.375rem, 2.6vw, 2.125rem);
+  line-height: 1.4;
+  letter-spacing: -0.008em;
+}
+
+.type-numeral {
+  font-family: var(--font-source-serif), Georgia, serif;
+  font-variation-settings: "opsz" 48;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.02em;
+}
+
+/* Section and field labels. Sized to actually be read, not to decorate. */
+.type-eyebrow {
+  font-family: var(--font-source-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+
+/* Figures and indices. Tabular, but set in the text face — a monospace here
+   reads as software, which is the opposite of the intended register. */
+.type-data {
+  font-family: var(--font-source-sans), ui-sans-serif, system-ui, sans-serif;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.type-lead {
+  font-size: clamp(1.0625rem, 1.05vw, 1.1875rem);
+  line-height: 1.68;
+  letter-spacing: -0.003em;
+}
+
+/* ==========================================================================
+   Surface details
+   Depth comes from overlapping planes, scale and grain — never from shadows.
+   ========================================================================== */
+
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.3;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+.rule-dark {
+  border-color: var(--rule-dark);
+}
+
+.rule-light {
+  border-color: var(--rule-light);
+}
+
+/* ==========================================================================
+   Reveal safety nets
+   The scroll-reveals must never be the only thing making content visible:
+   no-JS (see layout.tsx <noscript>) and reduced-motion both neutralise them.
+   ========================================================================== */
+
+[data-reveal],
+[data-motion-scroll] {
+  will-change: transform, opacity;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 
-  [data-reveal] {
+  /* `!important` beats the inline styles the motion library writes, so the
+     end state is identical whether or not its JS has run. */
+  [data-reveal],
+  [data-reveal] *,
+  [data-motion-scroll],
+  [data-motion-scroll] > * {
     opacity: 1 !important;
     transform: none !important;
+    clip-path: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+
+  [data-motion-loop] {
+    animation: none !important;
+  }
+}
+
+/* ==========================================================================
+   Keyframes — transform/opacity only, and deliberately unhurried
+   ========================================================================== */
+
+@keyframes mc-scroll-hint {
+  0% {
+    transform: translate3d(0, -100%, 0);
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 100%, 0);
+    opacity: 0;
   }
 }
